@@ -1,22 +1,31 @@
 package org.example.service;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
 import org.example.model.Order;
 import org.example.model.Product;
+import org.example.repository.OrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+@ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
-    static OrderService orderService;
-    @BeforeEach
-    public void setup(){
-        orderService = new OrderService();
-    }
+    @InjectMocks
+    OrderService orderService;
+
+    @Mock
+    OrderRepository orderRepository;
+
     @Test
     void deveCriarPedido() {
         //given: um pedido
@@ -27,9 +36,11 @@ class OrderServiceTest {
         listaProdutos.add(product02);
         Order order = new Order(0, listaProdutos);
         //when: criado
-        orderService.createOrder(order);
+        when(orderRepository.addOrder(order)).thenReturn(order);
+        Order orderCreated = orderService.createOrder(order);
+        verify(orderRepository).addOrder(order);
         //then: deve ser salvo corretamente
-        assertEquals(order, orderService.searchById(0));
+        assertEquals(order, orderCreated);
     }
 
     @Test
@@ -59,6 +70,7 @@ class OrderServiceTest {
         listaProdutos.add(product01);
         listaProdutos.add(product02);
         Order order = new Order(0, listaProdutos);
+        when(orderRepository.searchOrder(order.getId())).thenReturn(order);
         orderService.createOrder(order);
         String showOrder = orderService.showOrder(0);
         assertEquals(order.toString(), showOrder);
@@ -66,6 +78,7 @@ class OrderServiceTest {
     }
     @Test
     public void naoDeveRetornarPedidoNaoSalvo(){
+        when(orderRepository.searchOrder(0)).thenReturn(null);
         assertNull(orderService.searchById(0));
     }
 
