@@ -1,34 +1,27 @@
-package service;
+package org.example.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import org.example.model.Product;
-import org.example.repository.ProductRepository;
 import org.example.service.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 
 public class ProductServiceTest {
-    @InjectMocks
-    ProductService productService;
-    @Mock
-    ProductRepository productRepository;
+   // @InjectMocks
+    static ProductService productService;
+
 
     @BeforeEach
     public void setup(){
         productService = new ProductService();
-        MockitoAnnotations.openMocks(this);
     }
 
     @Test
     public void deveSalvarUmProdutoCorretamente(){
         //given: um produto
         Product product = new Product(0, "produto teste");
-        when(productRepository.buscarProduto(product.getId())).thenReturn(null);
         //when: saved
         productService.cadastrarProduto(product);
         //then: it was saved correctly
