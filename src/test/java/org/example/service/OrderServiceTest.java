@@ -81,5 +81,21 @@ class OrderServiceTest {
         when(orderRepository.searchOrder(0)).thenReturn(null);
         assertNull(orderService.searchById(0));
     }
+    @Test
+    public void deveRetornarUmPedidoPorId(){
+        //given: um pedido
+        Product product01 = new Product(0, "Produto 00");
+        Product product02 = new Product(1, "Produto 01");
+        List<Product> listaProdutos = new ArrayList<>();
+        listaProdutos.add(product01);
+        listaProdutos.add(product02);
+        Order order = new Order(0, listaProdutos);
+
+        when(orderRepository.addOrder(order)).thenReturn(order);
+        Order orderCreated = orderService.createOrder(order);
+        when(orderRepository.searchOrder(0)).thenReturn(order);
+        //then: deve ser retornado corretamente
+        assertEquals(order, orderService.searchById(0));
+    }
 
 }
